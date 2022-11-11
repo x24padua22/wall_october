@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wall Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="/assets/js/wall.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <h1>Hello <%= DATA.first_name %></h1>
+        <form action="/create_post" id="create_post" method="post">
+            <input type="text" name="post">
+            <input type="submit" value="Post">
+        </form>
+
+        <ul>
+        <% for(index in DATA.posts){
+            let post = DATA.posts[index];
+            let comments = (post.comments) ? JSON.parse(post.comments) : []; %>
+            <li>
+                <div>
+                    <span><%= post.posted_by %> - <%= post.created_at %></span>
+                    <p><%= post.post %></p>
+                </div>
+                <form action="/delete_post" class="delete_post" method="POST">
+                    <input type="hidden" name="post_id" value="<%= post.id %>">
+                    <input type="submit" value="X">
+                </form>
+                <ul>
+                    <% for(comment_id in comments){
+                        let comment = comments[comment_id]; %>
+                    <li>
+                        <div>
+                            <span><%= comment[1] %> - <%= comment[2] %></span>
+                            <p><%= comment[0] %></p>
+                        </div>
+                        <form action="/delete_comment" class="delete_comment" method="POST">
+                            <input type="hidden" name="comment_id" value="<%= comment_id %>">
+                            <input type="submit" value="X">
+                        </form>
+                    </li>
+                    <%  } %>
+                </ul>
+                <form action="/create_comment" class="create_comment" method="POST">
+                    <input type="hidden" name="post_id" value="<%= post.id %>">
+                    <input type="text" name="comment">
+                    <input type="submit" value="Comment">
+                </form>
+            </li>
+        <%  } %>
+        </ul>
+    </div>
+</body>
+</html>
